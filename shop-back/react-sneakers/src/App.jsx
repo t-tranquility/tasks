@@ -59,6 +59,17 @@ function App() {
     setCartItems((prev) => prev.filter((item) => item._id !== _id));
   };
 
+  const onClearCart = async () => {
+    try {
+      await axios.delete('http://localhost:5000/cart');
+      setCartItems([]);
+      console.log('Cart cleared successfully');  
+    } catch (error) {
+      console.error('Error clearing the cart:', error);
+      // Handle error (if needed)
+    }
+  };
+
    // Function to increase the quantity of an item in the cart
    const onIncreaseItem = async (_id) => {
     // Sending a PUT request to increase the quantity on the server
@@ -92,12 +103,13 @@ function App() {
         {/* Rendering the Drawer component if cartOpened state is true */}
       {cartOpened ? (
         <Drawer
-          items={cartItems}
-          onClose={() => setCartOpened(false)}
-          onRemove={onRemoveItem}
-          onIncrease={onIncreaseItem}
-          onDecrease={onDecreaseItem}
-        />
+        items={cartItems}
+        onClose={() => setCartOpened(false)}
+        onRemove={onRemoveItem}
+        onIncrease={onIncreaseItem}
+        onDecrease={onDecreaseItem}
+        onClearCart={onClearCart}  
+      />
       ) : null}
         {/* Rendering the Header component with onClickCart handler */}
         <Header onClickCart={() => setCartOpened(true)} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState } from 'react';
 import AppContext from '../context';
 
 /*
@@ -9,13 +9,41 @@ import AppContext from '../context';
  * @param {Function} onDecrease - Function to decrease the quantity of an item in the drawer.
  * @param {Array} items - Array of items in the drawer.
  */
-function Drawer({  onClose, onRemove, onIncrease, onDecrease, items = []  }) {
+function Drawer({  onClose, onRemove, onIncrease, onDecrease, onClearCart, items = []  }) {
   /*Accessing the cartItems from the global context using useContext.*/
   const { cartItems } = React.useContext(AppContext);
+
+  const [showOrderForm, setShowOrderForm] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    cardNumber: '',
+    deliveryAddress: '',
+    contactPhone: '',
+  });
 
   /* Calculating the total price of items in the cart using reduce.*/
   const totalPrice = cartItems.reduce((sum, obj) => obj.price + sum, 0);
 
+
+  const handleOrderSubmit = () => {
+    const { name, cardNumber, deliveryAddress, contactPhone } = formData;
+  
+    // Handle order submission logic here
+    console.log('Order submitted:', { name, cardNumber, deliveryAddress, contactPhone });
+  
+    // Clear the cart
+    onClearCart();
+  
+    // Close the drawer and reset the form data
+    onClose();
+    setShowOrderForm(false);
+    setFormData({
+      name: '',
+      cardNumber: '',
+      deliveryAddress: '',
+      contactPhone: '',
+    });
+  };
 
   return (
     <div className="overlay">
@@ -32,7 +60,50 @@ function Drawer({  onClose, onRemove, onIncrease, onDecrease, items = []  }) {
           </h2>
 
           {/* Conditional rendering based on whether items are in the cart */}
-          {items.length > 0 ? (
+          {showOrderForm ? (
+            <div className="orderForm">
+              <div>
+                <label htmlFor="name">Имя:</label>
+                <input
+                  type="text"
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="cardNumber">Номер карточки:</label>
+                <input
+                  type="text"
+                  id="cardNumber"
+                  value={formData.cardNumber}
+                  onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="deliveryAddress">Адрес доставки:</label>
+                <input
+                  type="text"
+                  id="deliveryAddress"
+                  value={formData.deliveryAddress}
+                  onChange={(e) => setFormData({ ...formData, deliveryAddress: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="contactPhone">Контактный телефон:</label>
+                <input
+                  type="text"
+                  id="contactPhone"
+                  value={formData.contactPhone}
+                  onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+                />
+              </div>
+
+              <button className="greenButton" onClick={handleOrderSubmit}>
+                Подтвердить заказ
+              </button>
+            </div>
+          ) : items.length > 0 ? (
             <div>
               <div className="items">
 
@@ -70,7 +141,7 @@ function Drawer({  onClose, onRemove, onIncrease, onDecrease, items = []  }) {
                     <strong>{totalPrice} руб.</strong>
                   </li>
                 </ul>
-                <button className="greenButton">
+                <button className="greenButton" onClick={() => setShowOrderForm(true)}>
                   Оформить заказ <img src="/img/arrow.svg" alt="arrow" />
                 </button>
               </div>

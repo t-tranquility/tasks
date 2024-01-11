@@ -59,6 +59,18 @@ class CartController {
         }
     }
 
+    async clearCart(req, res) {
+      try {
+        console.log('Clearing the cart...');
+        await CartItem.deleteMany({});
+        res.json({ message: 'Cart cleared successfully' });
+        console.log('Cart cleared successfully');
+      } catch (error) {
+        console.error('Error clearing the cart:', error);
+        res.status(500).json(error);
+      }
+    }
+
     async increaseQuantity(req, res) {
       try {
         const { id } = req.params;

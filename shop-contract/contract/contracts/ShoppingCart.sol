@@ -4,16 +4,16 @@ pragma solidity ^0.8.19;
 contract ShoppingCart {
     struct CartItem {
         string title;
-        uint256 price;
+        string price;
         string imageUrl;
     }
 
     mapping(address => CartItem[]) public userCart;
 
-    event ItemAdded(address indexed user, string title, uint256 price, string imageUrl);
-    event ItemRemoved(address indexed user, string title, uint256 price, string imageUrl);
+    event ItemAdded(address indexed user, string title, string price, string imageUrl);
+    event ItemRemoved(address indexed user, string title, string price, string imageUrl);
 
-    function addItem(string memory _title, uint256 _price, string memory _imageUrl) public {
+    function addItem(string memory _title, string memory _price, string memory _imageUrl) public {
         CartItem memory newItem = CartItem(_title, _price, _imageUrl);
         userCart[msg.sender].push(newItem);
         emit ItemAdded(msg.sender, _title, _price, _imageUrl);
@@ -23,7 +23,7 @@ contract ShoppingCart {
         require(_index < userCart[msg.sender].length, "Invalid index");
 
         string memory removedTitle = userCart[msg.sender][_index].title;
-        uint256 removedPrice = userCart[msg.sender][_index].price;
+        string memory removedPrice = userCart[msg.sender][_index].price;
         string memory removedImageUrl = userCart[msg.sender][_index].imageUrl;
 
         delete userCart[msg.sender][_index];

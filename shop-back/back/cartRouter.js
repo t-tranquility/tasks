@@ -10,5 +10,6 @@ cartRouter.delete('/cart/:id', CartController.delete)
 cartRouter.put('/cart/increase/:id', CartController.increaseQuantity);
 cartRouter.put('/cart/decrease/:id', CartController.decreaseQuantity);
 cartRouter.delete('/cart/:id/remove', CartController.removeItem);
+cartRouter.delete('/cart', CartController.clearCart);
 
 export default cartRouter

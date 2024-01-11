@@ -41,14 +41,15 @@ function Header(props) {
             />
             <span>{totalPrice} руб.</span>
           </li>
-          {/*
+          
           <li>
             <Link to="/favourite">
-              <img width={18} height={18} src="/img/like.svg" alt="favorites" />
-            </Link>
-            <span>Избранное</span>
+              <img width={18} height={18} src="/img/banana-svgrepo-com.svg" alt="favorites" />
+              </Link>
+            <span>Bananas</span>
+            
           </li>
-
+          {/*
           <li>
             <img width={18} height={18} src="/img/profile.svg" alt="profile" />
             <span>Профиль</span>
