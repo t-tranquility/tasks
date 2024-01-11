@@ -11,14 +11,20 @@ class ItemsController {
         }
     }
 
-    async getAll(req,res){
-        try{
-            const items = await Items.find()
-            return res.json(items)
-        } catch(e){
-            res.status(500).json(e);
+    async getAll(req, res) {
+        try {
+          const { search } = req.query;
+          let query = {};
+          if (search) {
+            query = { title: { $regex: new RegExp(search, 'i') } };
+          }
+    
+          const items = await Items.find(query);
+          return res.json(items);
+        } catch (e) {
+          res.status(500).json(e);
         }
-    }
+      }
 
     async getOne(req,res){
         try{

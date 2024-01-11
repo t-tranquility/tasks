@@ -1,4 +1,4 @@
-// Importing necessary React components and libraries
+// tasks
 import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import Drawer from './components/Drawer';
@@ -16,18 +16,31 @@ function App() {
   const [cartItems, setCartItems] = React.useState([]);
   // State for storing all available items
   const [items, setItems] = React.useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Fetching items and cart items from the server on component mount
-  React.useEffect(() => {
-    // Fetching all available items
-    axios.get('http://localhost:5000/items').then((res) => {
-      setItems(res.data);
-    });
-    // Fetching items in the cart
-    axios.get('http://localhost:5000/cart').then((res) => {
-      setCartItems(res.data);
-    });
-  }, []);
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/items?search=${encodeURIComponent(searchQuery)}`);
+        setItems(response.data);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/cart');
+        setCartItems(response.data);
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+      }
+    };
+
+    fetchItems();
+    fetchCartItems();
+  }, [searchQuery]);
 
   // Function to add an item to the cart
   const onAddToCart = async (obj) => {
@@ -94,7 +107,11 @@ function App() {
             <h1>Все кроссовки</h1>
             <div className="search-block">
               <img src="/img/search.svg" alt="search" />
-              <input placeholder="Поиск..." />
+              <input
+                placeholder="Поиск..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
           <div className="wrapper-card">

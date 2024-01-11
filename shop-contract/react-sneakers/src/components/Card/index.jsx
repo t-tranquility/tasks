@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styles from './Card.module.scss';
+import AppContext from '../../context';
 
 /**
  * Card functional component declaration.
@@ -10,25 +11,37 @@ import styles from './Card.module.scss';
  * @param {Function} onPlus - Callback function for the add-to-cart action.
  * @param {boolean} added - Flag indicating whether the product is already in the cart.
  */
-function Card({ imageUrl, title, price, onPlus, added = false }) {
+function Card({ title, price, imageUrl, onPlus, added, mask, contract  }) {
+  const { setCartItems } = useContext(AppContext);
   /* State to manage the 'isAdded' flag, indicating whether the product is added to the cart. */
   const [isAdded, setIsAdded] = React.useState(added);
-
-
   useEffect(() => {
     setIsAdded(added);
   }, [added]);
 
-  /* Click event handler for the 'Add to Cart' button.*/
-  const onClickPlus = () => {
-    onPlus({ title, price, imageUrl });
-    setIsAdded(true);
 
+  const handleAddToCart = async () => {
+    try {
+      const signer = await mask();
+      const contractWithSigner = contract.connect(signer);
+      await contractWithSigner.addItem(title, price, imageUrl);
+      setCartItems((prevCartItems) => [...prevCartItems, { title, price, imageUrl }]);
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+    }
   };
+
+    /* Click event handler for the 'Add to Cart' button.*/
+    const onClickPlus = () => {
+      onPlus({ title, price, imageUrl });
+      setIsAdded(true);
+      handleAddToCart(); // Вызываем функцию добавления в корзину при нажатии кнопки
+    };
+
 
   return (
     <div className={styles.card}>
-      {/*<img className={styles.favourite} src="/img/btn-unliked.svg" alt="unliked" />*/}
+      <img className={styles.favourite} src="/img/btn-unliked.svg" alt="unliked" />
       <img width={133} height={112} src={imageUrl} alt="" />
       <h5>{title}</h5>
       <div className={styles.cardBottom}>
@@ -36,9 +49,9 @@ function Card({ imageUrl, title, price, onPlus, added = false }) {
           <span>Цена:</span>
           <b>{price} руб.</b>
         </div>
-        <button className={styles.buttonPlus}>
+        <button className={styles.buttonPlus} onClick={onClickPlus}>
         <img
-            onClick={onClickPlus}
+            onClick={handleAddToCart}
             src={isAdded ? "/img/btn-plused.svg" : "/img/btn-unplused.svg"}
             alt="plus"
           />

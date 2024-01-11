@@ -24,7 +24,7 @@ function Header(props) {
             <img width={40} height={40} src="/img/logo.png" alt="logo" />
           </Link>
           <div className="headerInfo">
-            <h3>DATABASE</h3>
+            <h3>CONTRACT</h3>
             <p>Магазин лучших кроссовок</p>
           </div>
         </div>
@@ -41,7 +41,7 @@ function Header(props) {
             />
             <span>{totalPrice} руб.</span>
           </li>
-          {/*
+
           <li>
             <Link to="/favourite">
               <img width={18} height={18} src="/img/like.svg" alt="favorites" />
@@ -52,8 +52,7 @@ function Header(props) {
           <li>
             <img width={18} height={18} src="/img/profile.svg" alt="profile" />
             <span>Профиль</span>
-          </li> 
-          */}
+          </li>
         </ul>
       </header>
 
